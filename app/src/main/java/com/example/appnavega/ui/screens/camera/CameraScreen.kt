@@ -12,15 +12,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
 fun CameraScreen() {
@@ -29,14 +26,12 @@ fun CameraScreen() {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center)
     {
-        var nameingresado by rememberSaveable { mutableStateOf("") }
-        // esta variable almacena el nombre ingresado por el usuario.
-
-        var nameconfirmado by rememberSaveable { mutableStateOf("") }
-        // esta variable es la que se muestra al presionar el boton.
+        val viewModel: CameraViewmodel = viewModel()
+        var nameImput = viewModel.nameimput
+        var confirmedname = viewModel.confirmedname
 
         Text(
-            text = "Con rememberSaveable y mutableStateOf",
+            text = "Con rememberSaveable y ViewModel",
             style = MaterialTheme.typography.bodyLarge,
             fontSize = 13.sp,
             fontStyle = androidx.compose.ui.text.font.FontStyle.Italic,
@@ -45,16 +40,16 @@ fun CameraScreen() {
         )
 
         Text(
-            text = if (nameconfirmado.isNotEmpty())
-                "Bienvenido $nameconfirmado!" else "¿Como es tu nombre?",
+            text = if (confirmedname.isNotEmpty())
+                "Bienvenido $confirmedname!" else "¿Como es tu nombre?",
             style = MaterialTheme.typography.headlineMedium,
             color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.padding(bottom = 62.dp)
         )
 
         TextField(
-            value = nameingresado,
-            onValueChange = { nameingresado = it },
+            value = nameImput,
+            onValueChange = { viewModel.onNameChange(it) },
             label = { Text("Ingresa tu nombre") },
             modifier = Modifier.width(300.dp).padding()
         )
@@ -62,7 +57,7 @@ fun CameraScreen() {
         Spacer(modifier = Modifier.height(32.dp))
 
         Button(
-            onClick = { nameconfirmado = nameingresado }) {
+            onClick = { viewModel.onConfirmName() }) {
             Text("Ingresar")
         }
     }
